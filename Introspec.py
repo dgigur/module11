@@ -34,11 +34,33 @@ class Vehicle:
 
 
 def introspection_info(obj):
-    introspection = [type(obj), dir(obj), inspect.getmodule(obj)]
+    introspection = {'type': type(obj),
+                     'methods': [x for x in dir(obj) if callable(getattr(obj, x))],
+                     'attributes': [x for x in dir(obj) if not callable(getattr(obj, x))],
+                     'module': inspect.getmodule(obj)}
+    return introspection
+
+
+def introspection_info_2(obj):
+    methods = []
+    attributes = []
+    for i in dir(obj):
+        attr = getattr(obj, i)
+        if callable(attr):
+            methods.append(i)
+        else:
+            attributes.append(i)
+    introspection = {'type': type(obj),
+                     'methods': methods,
+                     'attributes': attributes,
+                     'module': inspect.getmodule(obj)}
     return introspection
 
 
 Car = Vehicle('Fedos', 'Toyota Mark II', 'blue', 500)
+
 pprint.pprint(introspection_info(Car))
 print("-----------------------------------------------------------------------------")
 pprint.pprint(introspection_info(len))
+print("-----------------------------------------------------------------------------")
+pprint.pprint(introspection_info_2(Car))
